@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Computational Complexity</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/black.min.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+  :root {
+    --amber:  #f5a623;
+    --green:  #4ecb8d;
+    --purple: #a78bfa;
+    --blue:   #60a5fa;
+    --red:    #f87171;
+    --bg:     #0a0a0f;
+    --bg2:    #10101a;
+    --bg3:    #181824;
+    --border: #2a2a3a;
+    --text:   #e8e8f0;
+    --muted:  #8888a8;
+  }
+
+  .reveal-viewport { background: var(--bg); }
+  .reveal .slides section { background: transparent; }
+
+  .reveal { font-family: 'DM Sans', sans-serif; color: var(--text); }
+  .reveal h1, .reveal h2, .reveal h3 { font-family: 'Playfair Display', serif; font-weight: 700; }
+  .reveal h1 { font-size: 1.6em; color: var(--amber); line-height: 1.1; }
+  .reveal h2 { font-size: 1.1em; color: var(--amber); margin-bottom: .2em; }
+  .reveal h3 { font-size: .78em; color: var(--green); margin-bottom: .15em; }
+  .reveal p  { font-size: .56em; line-height: 1.45; color: var(--text); }
+  .reveal li { font-size: .54em; line-height: 1.45; margin-bottom: .1em; }
+  .reveal code { font-family: 'JetBrains Mono', monospace; font-size: .72em; }
+  .reveal pre  { box-shadow: none; background: var(--bg3); border: 1px solid var(--border);
+                 border-radius: 6px; padding: .3em .5em; margin: .25em 0; }
+  .reveal pre code { font-size: .52em; line-height: 1.35; background: transparent; color: #cdd6f4; }
+
+  /* slide chrome */
+  .slide-hdr {
+    display: flex; align-items: center; gap: .4em;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: .2em; margin-bottom: .3em;
+  }
+  .slide-hdr .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .42em; font-weight: 500;
+    color: var(--bg); background: var(--amber);
+    padding: .1em .4em; border-radius: 3px;
+    letter-spacing: .04em;
+  }
+  .slide-hdr h2 { margin: 0; font-size: .95em; }
+
+  /* two-column */
+  .cols   { display: grid; gap: .5em; }
+  .cols-2 { grid-template-columns: 1fr 1fr; }
+  .cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .cols-6040 { grid-template-columns: 6fr 4fr; }
+  .cols-4060 { grid-template-columns: 4fr 6fr; }
+
+  /* cards */
+  .card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 6px; padding: .35em .6em;
+  }
+  .card.amber { border-left: 3px solid var(--amber); }
+  .card.green { border-left: 3px solid var(--green); }
+  .card.purple{ border-left: 3px solid var(--purple); }
+  .card.blue  { border-left: 3px solid var(--blue); }
+  .card.red   { border-left: 3px solid var(--red); }
+  .card h3 { font-size: .64em; margin: 0 0 .12em; }
+  .card p  { font-size: .52em; margin: 0; color: #b8b8d0; }
+  .card ul { margin: 0; padding-left: 1em; }
+  .card li { font-size: .52em; color: #b8b8d0; margin-bottom: .02em; }
+
+  /* table */
+  .reveal table { width: 100%; border-collapse: collapse; font-size: .5em; }
+  .reveal table th { background: var(--bg3); color: var(--amber); font-weight: 600;
+                     padding: .2em .4em; border: 1px solid var(--border); text-align: left; }
+  .reveal table td { padding: .18em .4em; border: 1px solid var(--border); color: #ccc; }
+  .reveal table tr:nth-child(even) td { background: #0e0e18; }
+
+  /* accent spans */
+  .a  { color: var(--amber); font-weight: 600; }
+  .g  { color: var(--green); font-weight: 600; }
+  .p  { color: var(--purple); font-weight: 600; }
+  .b  { color: var(--blue); font-weight: 600; }
+  .r  { color: var(--red); font-weight: 600; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  /* SVG graph diagrams */
+  svg.diagram { display: block; margin: 0 auto; overflow: visible; }
+
+  /* pill badges */
+  .pill {
+    display: inline-block; font-family: 'JetBrains Mono', monospace;
+    font-size: .44em; padding: .08em .4em; border-radius: 99px;
+    border: 1px solid; margin: 0 .08em;
+  }
+  .pill.amber { color: var(--amber); border-color: var(--amber); }
+  .pill.green { color: var(--green); border-color: var(--green); }
+  .pill.purple{ color: var(--purple); border-color: var(--purple); }
+  .pill.blue  { color: var(--blue); border-color: var(--blue); }
+
+  /* footer -- hidden */
+  .reveal .slide-footer { display: none; }
+  /* title slide special */
+  .title-slide h1 { font-size: 1.8em; }
+  .title-slide .subtitle {
+    font-size: .7em; color: var(--green); font-family: 'DM Sans', sans-serif;
+    font-weight: 300; letter-spacing: .04em; margin: .3em 0 .6em;
+  }
+  .title-slide .meta { font-size: .48em; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+
+  /* super-step animator */
+  .ss-row {
+    display: flex; gap: .25em; align-items: center;
+    margin: .1em 0; font-size: .55em; font-family: 'JetBrains Mono', monospace;
+  }
+  .ss-node {
+    padding: .2em .55em; border-radius: 5px; font-size: .9em;
+    background: var(--bg3); border: 1px solid var(--border); color: var(--text);
+  }
+  .ss-node.active { background: #1a2a1a; border-color: var(--green); color: var(--green); }
+  .ss-node.done   { background: #1a1a2a; border-color: var(--purple); color: var(--purple); }
+  .ss-arrow { color: var(--amber); }
+  .ss-label { font-size: .8em; color: var(--muted); margin-left: .3em; }
+
+  /* reduce default margins */
+  .reveal ul, .reveal ol { margin: .15em 0 .15em 1em; }
+.reveal .slides > section { display: flex !important; flex-direction: column !important; overflow-y: auto !important; align-items: stretch !important; justify-content: flex-start !important; }
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- ═══════════════════════════════════════════════════════════════
+  SLIDE 01 — Title
+══════════════════════════════════════════════════════════════════ -->
+<section class="title-slide" data-background-color="#0a0a0f">
+  <div style="font-family:'JetBrains Mono',monospace; font-size:.5em; color:var(--muted); margin-bottom:.4em; letter-spacing:.1em;">COMPUTER SCIENCE FUNDAMENTALS SERIES</div>
+  <h1>Computational<br>Complexity</h1>
+  <div class="subtitle">
+    Big-O &middot; P vs NP &middot; NP-completeness &middot;<br>
+    Reductions &middot; Approximation &middot; Amortised analysis
+  </div>
+  <div style="width:60px; height:3px; background:var(--amber); margin-bottom:1.4em;"></div>
+  <div class="meta">
+    Mid-level software engineer track &nbsp;&middot;&nbsp; 20 slides
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+  SLIDE 02 — Asymptotic Notation
+══════════════════════════════════════════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">02</span>
+    <h2>Asymptotic Notation &mdash; Big-O and Friends</h2>
+  </div>
+  <p>We need a machine-independent way to describe how an algorithm's resource usage grows as input size <em>n</em> increases. Constants and lower-order terms are irrelevant at scale.</p>
+  <table>
+    <thead>
+      <tr><th>Notation</th><th>Meaning</th><th>Intuition</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><span class="a">O(g(n))</span></td><td>Asymptotic upper bound</td><td>f grows <em>no faster</em> than g</td></tr>
+      <tr><td><span class="a">&Omega;(g(n))</span></td><td>Asymptotic lower bound</td><td>f grows <em>at least as fast</em> as g</td></tr>
+      <tr><td><span class="a">&Theta;(g(n))</span></td><td>Tight bound</td><td>f grows <em>at the same rate</em> as g</td></tr>
+      <tr><td><span class="a">o(g(n))</span></td><td>Strict upper bound</td><td>f grows <em>strictly slower</em> than g</td></tr>
+      <tr><td><span class="a">&omega;(g(n))</span></td><td>Strict lower bound</td><td>f grows <em>strictly faster</em> than g</td></tr>
+    </tbody>
+  </table>
+  <div class="card blue" style="margin-top:.4em">
+    <p><strong style="color:var(--blue)">Formal definition (Big-O):</strong> f(n) = O(g(n)) if there exist constants c &gt; 0 and n<sub>0</sub> such that for all n &ge; n<sub>0</sub>: f(n) &le; c &middot; g(n).</p>
+  </div>
+  <div class="card amber" style="margin-top:.3em">
+    <p>Big-O describes the <em>worst-case</em> growth rate. It is an upper bound &mdash; saying an algorithm is O(n&sup2;) does not mean it always takes n&sup2; steps.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+  SLIDE 03 — Common Complexity Classes
+══════════════════════════════════════════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">03</span>
+    <h2>Common Complexity Classes</h2>
+  </div>
+  <table>
+    <thead>
+      <tr><th>Class</th><th>Name</th><th>Example algorithm</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><span class="g">O(1)</span></td><td>Constant</td><td>Hash table lookup</td></tr>
+      <tr><td><span class="g">O(log n)</span></td><td>Logarithmic</td><td>Binary search</td></tr>
+      <tr><td><span class="g">O(n)</span></td><td>Linear</td><td>Linear search, single pass</td></tr>
+      <tr><td><span class="g">O(n log n)</span></td><td>Linearithmic</td><td>Merge sort, heap sort</td></tr>
+      <tr><td><span class="a">O(n&sup2;)</span></td><td>Quadratic</td><td>Bubble sort, insertion sort</td></tr>
+      <tr><td><span class="a">O(n&sup3;)</span></td><td>Cubic</td><td>Naive matrix multiplication</td></tr>
+      <tr><td><span class="r">O(2<sup>n</sup>)</span></td><td>Exponential</td><td>Brute-force subset enumeration</td></tr>
+      <tr><td><span class="r">O(n!)</span></td><td>Factorial</td><td>Brute-force permutations</td></tr>
+    </tbody>
+  </table>
+  <div class="card green" style="margin-top:.5em">
+    <p>A problem is <em>tractable</em> if it admits a polynomial-time algorithm &mdash; O(n<sup>k</sup>) for some constant k. Exponential and factorial problems are <em>intractable</em> for large inputs.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+  SLIDE 04 — Comparing Growth Rates
+══════════════════════════════════════════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">04</span>
+    <h2>Comparing Growth Rates</h2>
+  </div>
+  <h3>Concrete numbers at scale</h3>
+  <table>
+    <thead>
+      <tr><th>n</th><th>log n</th><th>n</th><th>n log n</th><th>n&sup2;</th><th>2<sup>n</sup></th></tr>
+    </thead>
+    <tbody>
+      <tr><td>10</td><td>3.3</td><td>10</td><td>33</td><td>100</td><td>1,024</td></tr>
+      <tr><td>100</td><td>6.6</td><td>100</td><td>664</td><td>10,000</td><td>1.27 &times; 10<sup>30</sup></td></tr>
+      <tr><td>1,000</td><td>10</td><td>1,000</td><td>10,000</td><td>10<sup>6</sup></td><td>&mdash;</td></tr>
+      <tr><td>10<sup>6</sup></td><td>20</td><td>10<sup>6</sup></td><td>2 &times; 10<sup>7</sup></td><td>10<sup>12</sup></td><td>&mdash;</td></tr>
+    </tbody>
+  </table>
+  <div class="card red" style="margin-top:.4em">
+    <p>At n = 100, an O(2<sup>n</sup>) algorithm requires more operations than atoms in the observable universe. This is why polynomial vs exponential matters.</p>
+  </div>
+  <h3>Rules of thumb</h3>
+  <ul>
+    <li>Drop constants and lower-order terms: <code>5n&sup2; + 3n + 7 = O(n&sup2;)</code></li>
+    <li>Nested loops multiply: O(n) loop inside O(n) loop = O(n&sup2;)</li>
+    <li>Sequential steps add: O(n) + O(n log n) = O(n log n)</li>
+    <li>Logarithm bases don't matter: log<sub>2</sub>(n) = &Theta;(log<sub>10</sub>(n))</li>
+  </ul>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+  SLIDE 05 — Amortised Analysis
+══════════════════════════════════════════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">05</span>
+    <h2>Amortised Analysis</h2>
+  </div>
+  <p>Amortised analysis gives the <em>average</em> cost per operation over a worst-case sequence of operations. Not the same as average-case analysis (which assumes a probability distribution).</p>
+  <div class="cols cols-3" style="margin-top:.3em">
+    <div class="card amber">
+      <h3>Aggregate Method</h3>
+      <p>Compute total cost of n operations, divide by n.</p>
+    </div>
+    <div class="card green">
+      <h3>Accounting Method</h3>
+      <p>Assign an amortised "charge" per operation; overcharges build credit for expensive ops.</p>
+    </div>
+    <div class="card purple">
+      <h3>Potential Method</h3>
+      <p>Define a potential function &Phi; on the data structure; amortised cost = actual cost + &Delta;&Phi;.</p>
+    </div>
+  </div>
+  <h3 style="margin-top:.4em">Classic example: dynamic array</h3>
+  <p>A dynamic array doubles its capacity when full. Individual push operations are O(1) except when resizing occurs (O(n) copy). But n pushes cost at most 2n copies total.</p>
+  <div class="card blue" style="margin-top:.2em">
+    <p><strong style="color:var(--blue)">Amortised cost per push: O(1)</strong></p>
+  </div>
+  <p style="margin-top:.2em">Other examples: splay trees &mdash; O(log n) amortised &bull; Fibonacci heaps &mdash; O(1) amortised decrease-key &bull; binary counter increment &mdash; O(1) amortised</p>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+  SLIDE 06 — Decision Problems and Languages
+══════════════════════════════════════════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">06</span>
+    <h2>Decision Problems and Languages</h2>
+  </div>
+  <div class="cols cols-2">
+    <div>
+      <h3>Decision problems</h3>
+      <p>A <em>decision problem</em> asks a yes/no question about an input. Complexity theory focuses on decision problems because they are the simplest to classify.</p>
+      <div style="display:flex; flex-direction:column; gap:.25em; margin-top:.3em">
+        <div class="card amber">
+          <p><span class="a">PRIME:</span> "Is n a prime number?" &mdash; Yes/No</p>
+        </div>
+        <div class="card green">
+          <p><span class="g">PATH:</span> "Does graph G have a path from s to t?" &mdash; Yes/No</p>
+        </div>
+        <div class="card purple">
+          <p><span class="p">SAT:</span> "Is there an assignment satisfying boolean formula &phi;?" &mdash; Yes/No</p>
+        </div>
+      </div>
+    </div>
+    <div>
+      <h3>Languages</h3>
+      <p>A <em>language</em> L over alphabet &Sigma; is a set of strings. A decision problem maps to a language:</p>
+      <div class="card blue" style="margin-top:.3em">
+        <p>L = { x &isin; &Sigma;* : the answer for x is YES }</p>
+      </div>
+      <p style="margin-top:.3em">A Turing machine M <em>decides</em> L if it halts on every input and accepts exactly the strings in L.</p>
+      <div class="card amber" style="margin-top:.4em">
+        <p>Complexity classes are sets of languages &mdash; they group decision problems by the resources (time, space) required by the Turing machines that decide them.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+  SLIDE 07 — The Class P
+══════════════════════════════════════════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">07</span>
+    <h2>The Class P</h2>
+  </div>
+  <div class="cols cols-6040">
+    <div>
+      <h3>Definition</h3>
+      <p><span class="a">P</span> is the class of decision problems solvable by a <em>deterministic</em> Turing machine in polynomial time:</p>
+      <div class="card amber" style="margin-top:.2em">
+        <p>P = &bigcup;<sub>k</sub> DTIME(n<sup>k</sup>)</p>
+      </div>
+      <p style="margin-top:.3em">P captures the intuitive notion of "efficiently solvable" &mdash; problems where a fast algorithm exists.</p>
+      <div class="card blue" style="margin-top:.3em">
+        <p>Not all polynomial algorithms are fast in practice &mdash; O(n<sup>100</sup>) is technically in P but useless. The importance of P is theoretical: it defines the boundary of tractability.</p>
+      </div>
+    </div>
+    <div>
+      <h3>Problems in P</h3>
+      <table>
+        <thead>
+          <tr><th>Problem</th><th>Time</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Sorting</td><td>O(n log n)</td></tr>
+          <tr><td>Shortest path</td><td>O(E + V log V)</td></tr>
+          <tr><td>Primality (AKS)</td><td>O(n<sup>6</sup>)</td></tr>
+          <tr><td>Max matching</td><td>O(V<sup>3</sup>)</td></tr>
+          <tr><td>Linear programming</td><td>Polynomial</td></tr>
+          <tr><td>2-SAT</td><td>O(n + m)</td></tr>
+          <tr><td>Connectivity</td><td>O(V + E)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+  SLIDE 08 — The Class NP
+══════════════════════════════════════════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">08</span>
+    <h2>The Class NP</h2>
+  </div>
+  <h3>Definition</h3>
+  <p><span class="a">NP</span> is the class of decision problems solvable by a <em>nondeterministic</em> Turing machine in polynomial time.</p>
+  <p>Equivalently: NP is the class of problems for which a YES answer can be <em>verified</em> in polynomial time given a suitable certificate.</p>
+  <div class="cols cols-2" style="margin-top:.4em">
+    <div class="card green">
+      <h3>Nondeterminism</h3>
+      <p>A nondeterministic TM can "guess" a solution (explore all branches simultaneously). If <em>any</em> branch accepts in polynomial time, the machine accepts.</p>
+    </div>
+    <div class="card purple">
+      <h3>Key relationships</h3>
+      <ul>
+        <li>P &sube; NP (a deterministic TM is a special case)</li>
+        <li>coNP = complement languages of NP</li>
+        <li>Unknown: P = NP? &nbsp; NP = coNP?</li>
+      </ul>
+    </div>
+  </div>
+  <div class="card red" style="margin-top:.4em">
+    <p><strong style="color:var(--red)">NP does NOT mean "not polynomial".</strong> It means "nondeterministic polynomial time". Many NP problems are in P.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+  SLIDE 09 — NP Verifiers and Certificates
+══════════════════════════════════════════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">09</span>
+    <h2>NP &mdash; Verifiers and Certificates</h2>
+  </div>
+  <div class="card blue" style="margin-bottom:.3em">
+    <p>A language L is in NP if there exists a polynomial-time verifier V such that:<br>
+    L = { x : &exist; certificate c with |c| = poly(|x|) and V(x, c) accepts }.</p>
+  </div>
+  <table>
+    <thead>
+      <tr><th>Problem</th><th>Certificate</th><th>Verification</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><span class="a">SAT</span></td><td>A satisfying assignment</td><td>Evaluate formula &mdash; O(n)</td></tr>
+      <tr><td><span class="g">CLIQUE</span></td><td>A set of k vertices</td><td>Check all pairs adjacent &mdash; O(k&sup2;)</td></tr>
+      <tr><td><span class="p">HAMILTONIAN CYCLE</span></td><td>A permutation of vertices</td><td>Check each edge exists &mdash; O(n)</td></tr>
+      <tr><td><span class="b">COMPOSITE</span></td><td>A non-trivial factor</td><td>Perform division &mdash; O(n&sup2;)</td></tr>
+      <tr><td><span class="r">SUBSET SUM</span></td><td>A subset of numbers</td><td>Sum and compare &mdash; O(n)</td></tr>
+    </tbody>
+  </table>
+  <div class="card amber" style="margin-top:.4em">
+    <p>The certificate is a "proof" that the answer is YES. The verifier checks this proof efficiently. The hard part is <em>finding</em> the certificate, not checking it.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+  SLIDE 10 — Polynomial-Time Reductions
+══════════════════════════════════════════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">10</span>
+    <h2>Polynomial-Time Reductions</h2>
+  </div>
+  <div class="cols cols-2">
+    <div>
+      <h3>What is a reduction?</h3>
+      <p>A polynomial-time reduction from problem A to problem B is a poly-time computable function f such that:</p>
+      <div class="card amber" style="margin-top:.2em">
+        <p>x &isin; A &hArr; f(x) &isin; B</p>
+        <p style="margin-top:.15em">Written: A &le;<sub>P</sub> B &mdash; "A reduces to B"</p>
+      </div>
+      <h3 style="margin-top:.4em">What reductions tell us</h3>
+      <ul>
+        <li>If A &le;<sub>P</sub> B and B &isin; P, then A &isin; P</li>
+        <li>If A &le;<sub>P</sub> B and A &notin; P, then B &notin; P</li>
+        <li>Reductions transfer hardness: "B is at least as hard as A"</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Classic reduction chain</h3>
+      <div style="display:flex; flex-direction:column; gap:.2em; margin-top:.3em">
+        <div class="ss-row">
+          <span class="ss-node active">SAT</span>
+          <span class="ss-arrow">&rarr;</span>
+          <span class="ss-node active">3-SAT</span>
+        </div>
+        <div class="ss-row">
+          <span class="ss-node active">3-SAT</span>
+          <span class="ss-arrow">&rarr;</span>
+          <span class="ss-node active">CLIQUE</span>
+        </div>
+        <div class="ss-row">
+          <span class="ss-node active">CLIQUE</span>
+          <span class="ss-arrow">&rarr;</span>
+          <span class="ss-node active">VERTEX COVER</span>
+        </div>
+        <div class="ss-row">
+          <span class="ss-node active">VERTEX COVER</span>
+          <span class="ss-arrow">&rarr;</span>
+          <span class="ss-node active">HAM. CYCLE</span>
+        </div>
+        <div class="ss-row">
+          <span class="ss-node active">HAM. CYCLE</span>
+          <span class="ss-arrow">&rarr;</span>
+          <span class="ss-node active">TSP</span>
+        </div>
+      </div>
+      <div class="card green" style="margin-top:.4em">
+        <p>Each arrow is a polynomial-time reduction. If any of these could be solved in poly-time, so could all of them.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+  SLIDE 11 — NP-Completeness
+══════════════════════════════════════════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">11</span>
+    <h2>NP-Completeness</h2>
+  </div>
+  <h3>Definition</h3>
+  <p>A problem L is <span class="a">NP-complete</span> if:</p>
+  <div class="cols cols-2" style="margin-top:.2em">
+    <div class="card green">
+      <h3>1. L &isin; NP</h3>
+      <p>Solutions can be verified in polynomial time.</p>
+    </div>
+    <div class="card purple">
+      <h3>2. L is NP-hard</h3>
+      <p>Every problem in NP reduces to L in polynomial time.</p>
+    </div>
+  </div>
+  <p style="margin-top:.3em">NP-complete problems are the <em>hardest</em> problems in NP. If any NP-complete problem has a polynomial-time algorithm, then <span class="a">P = NP</span>.</p>
+  <h3 style="margin-top:.3em">Significance</h3>
+  <ul>
+    <li>NP-complete problems form the "boundary" of tractability</li>
+    <li>Thousands of natural problems are NP-complete</li>
+    <li>No polynomial-time algorithm is known for any of them</li>
+    <li>Strong evidence (but no proof) that none exists</li>
+  </ul>
+  <div class="card amber" style="margin-top:.3em">
+    <p>Finding a problem NP-complete is practically useful: it tells you to stop looking for an exact efficient algorithm and instead consider approximation, heuristics, or parameterised solutions.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+  SLIDE 12 — Cook-Levin Theorem
+══════════════════════════════════════════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">12</span>
+    <h2>The Cook-Levin Theorem</h2>
+  </div>
+  <div class="card amber" style="margin-bottom:.3em">
+    <p><strong style="color:var(--amber)">Theorem:</strong> SAT is NP-complete. (Cook, 1971; Levin, independently, 1973)</p>
+  </div>
+  <p>This was the first problem proven NP-complete. The proof shows that any NP computation can be encoded as a boolean satisfiability instance &mdash; the universal reduction.</p>
+  <h3>Proof sketch</h3>
+  <p>Given any NP language L decided by a nondeterministic TM M in time p(n):</p>
+  <div style="display:flex; flex-direction:column; gap:.2em; margin-top:.2em">
+    <div class="ss-row">
+      <span class="ss-node done">1</span>
+      <span class="ss-label">Encode M's computation tableau as boolean variables</span>
+    </div>
+    <div class="ss-row">
+      <span class="ss-node done">2</span>
+      <span class="ss-label">Build clauses: valid start state, valid transitions, accepting final state</span>
+    </div>
+    <div class="ss-row">
+      <span class="ss-node done">3</span>
+      <span class="ss-label">Formula is satisfiable &hArr; M accepts the input</span>
+    </div>
+    <div class="ss-row">
+      <span class="ss-node done">4</span>
+      <span class="ss-label">Reduction runs in polynomial time &mdash; tableau size is poly(n)</span>
+    </div>
+  </div>
+  <div class="card green" style="margin-top:.4em">
+    <p>Once SAT is NP-complete, all other NP-completeness proofs reduce from SAT (or from a problem already known to be NP-complete).</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+  SLIDE 13 — Classic NP-Complete Problems I
+══════════════════════════════════════════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">13</span>
+    <h2>Classic NP-Complete Problems I</h2>
+  </div>
+  <div class="cols cols-2">
+    <div>
+      <div class="card amber" style="margin-bottom:.3em">
+        <h3>SAT (Boolean Satisfiability)</h3>
+        <p>Given a boolean formula &phi;, is there an assignment of variables that makes &phi; true?</p>
+      </div>
+      <div class="card green" style="margin-bottom:.3em">
+        <h3>3-SAT</h3>
+        <p>SAT restricted to CNF with exactly 3 literals per clause. Still NP-complete (reduced from SAT). Surprisingly, <span class="b">2-SAT is in P</span>.</p>
+      </div>
+      <div class="card purple">
+        <h3>CLIQUE</h3>
+        <p>Given graph G and integer k, does G contain a complete subgraph of size k?</p>
+      </div>
+    </div>
+    <div>
+      <div class="card blue" style="margin-bottom:.3em">
+        <h3>INDEPENDENT SET</h3>
+        <p>Given graph G and integer k, does G contain k pairwise non-adjacent vertices? (Complement of CLIQUE.)</p>
+      </div>
+      <div class="card red" style="margin-bottom:.3em">
+        <h3>VERTEX COVER</h3>
+        <p>Given graph G and integer k, is there a set of at most k vertices touching every edge?</p>
+      </div>
+      <div class="card amber">
+        <p>These three graph problems are tightly related: S is an independent set &hArr; V \ S is a vertex cover. Reductions between them are straightforward.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+  SLIDE 14 — Classic NP-Complete Problems II
+══════════════════════════════════════════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">14</span>
+    <h2>Classic NP-Complete Problems II</h2>
+  </div>
+  <div class="cols cols-2">
+    <div>
+      <div class="card amber" style="margin-bottom:.3em">
+        <h3>HAMILTONIAN CYCLE</h3>
+        <p>Does graph G contain a cycle visiting every vertex exactly once?</p>
+      </div>
+      <div class="card green" style="margin-bottom:.3em">
+        <h3>TSP (decision version)</h3>
+        <p>Given a weighted complete graph and budget B, is there a tour visiting every city with total cost &le; B?</p>
+      </div>
+      <div class="card purple">
+        <h3>SUBSET SUM</h3>
+        <p>Given a set of integers S and target t, is there a subset of S summing to exactly t?</p>
+      </div>
+    </div>
+    <div>
+      <div class="card blue" style="margin-bottom:.3em">
+        <h3>GRAPH COLOURING (k &ge; 3)</h3>
+        <p>Can vertices be coloured with k colours so no two adjacent vertices share a colour? NP-complete for k &ge; 3; polynomial for k = 2.</p>
+      </div>
+      <div class="card red" style="margin-bottom:.3em">
+        <h3>SET COVER</h3>
+        <p>Given universe U and a collection of subsets, can you cover U with at most k subsets?</p>
+      </div>
+      <div class="card amber">
+        <p>These problems arise constantly in scheduling, logistics, networking, resource allocation, and VLSI design. Their NP-completeness motivates approximation algorithms.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+  SLIDE 15 — NP-Hard Problems
+══════════════════════════════════════════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">15</span>
+    <h2>NP-Hard Problems</h2>
+  </div>
+  <h3>Definition</h3>
+  <p>A problem H is <span class="a">NP-hard</span> if every problem in NP reduces to H in polynomial time. An NP-hard problem does NOT need to be in NP itself.</p>
+  <h3 style="margin-top:.3em">NP-hard but not in NP</h3>
+  <table>
+    <thead>
+      <tr><th>Problem</th><th>Why not in NP?</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><span class="r">Halting problem</span></td><td>Undecidable &mdash; no TM decides it at all</td></tr>
+      <tr><td><span class="p">QSAT (QBF)</span></td><td>PSPACE-complete; certificate may be exponential</td></tr>
+      <tr><td><span class="a">TSP optimisation</span></td><td>Output is a tour (not yes/no); decision version is in NP</td></tr>
+      <tr><td><span class="b">Counting SAT (#SAT)</span></td><td>Answer is a number, not a yes/no certificate</td></tr>
+    </tbody>
+  </table>
+  <h3 style="margin-top:.4em">Relationship diagram</h3>
+  <div style="background:var(--bg2); border:1px solid var(--border); border-radius:6px; padding:.5em;">
+    <svg viewBox="0 0 500 180" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto">
+      <!-- NP-hard outer -->
+      <ellipse cx="250" cy="90" rx="240" ry="80" fill="none" stroke="#f87171" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <text x="480" y="30" text-anchor="end" font-family="'DM Sans',sans-serif" font-size="12" fill="#f87171">NP-hard</text>
+      <!-- NP -->
+      <ellipse cx="180" cy="90" rx="140" ry="60" fill="none" stroke="#4ecb8d" stroke-width="1.5"/>
+      <text x="60" y="30" font-family="'DM Sans',sans-serif" font-size="12" fill="#4ecb8d">NP</text>
+      <!-- P -->
+      <ellipse cx="140" cy="90" rx="80" ry="40" fill="none" stroke="#60a5fa" stroke-width="1.5"/>
+      <text x="110" y="80" font-family="'DM Sans',sans-serif" font-size="12" fill="#60a5fa">P</text>
+      <!-- NP-complete intersection -->
+      <text x="240" y="80" font-family="'DM Sans',sans-serif" font-size="11" fill="#f5a623">NP-complete</text>
+      <text x="240" y="95" font-family="'DM Sans',sans-serif" font-size="10" fill="#8888a8">(NP-hard &cap; NP)</text>
+      <!-- Outside NP -->
+      <text x="400" y="90" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="10" fill="#8888a8">Halting</text>
+      <text x="400" y="105" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="10" fill="#8888a8">QSAT</text>
+    </svg>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+  SLIDE 16 — P vs NP
+══════════════════════════════════════════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">16</span>
+    <h2>P vs NP &mdash; The Open Question</h2>
+  </div>
+  <div class="card amber" style="margin-bottom:.3em">
+    <p><strong style="color:var(--amber)">The question:</strong> Does P = NP? Can every problem whose solution can be verified in polynomial time also be <em>solved</em> in polynomial time?</p>
+  </div>
+  <p>One of the seven <span class="g">Clay Mathematics Institute Millennium Prize Problems</span>. $1,000,000 for a correct proof either way. Most complexity theorists believe P &ne; NP, but no proof exists.</p>
+  <div class="cols cols-2" style="margin-top:.3em">
+    <div class="card green">
+      <h3>If P = NP</h3>
+      <ul>
+        <li>All NP-complete problems solvable efficiently</li>
+        <li>Cryptography based on factoring/discrete log breaks</li>
+        <li>Optimisation, scheduling, logistics become trivially solvable</li>
+        <li>Mathematical proof discovery becomes automatable</li>
+      </ul>
+    </div>
+    <div class="card red">
+      <h3>If P &ne; NP (proven)</h3>
+      <ul>
+        <li>Confirms inherently hard problems exist</li>
+        <li>Validates foundations of modern cryptography</li>
+        <li>Justifies study of approximation, heuristics, parameterised algorithms</li>
+      </ul>
+    </div>
+  </div>
+  <div class="card blue" style="margin-top:.4em">
+    <p>"If P = NP, then the world would be a profoundly different place. Everyone who could appreciate a symphony would be Mozart." &mdash; Scott Aaronson</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+  SLIDE 17 — Approximation Algorithms
+══════════════════════════════════════════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">17</span>
+    <h2>Approximation Algorithms</h2>
+  </div>
+  <p>When exact solutions are NP-hard, we settle for solutions that are <em>provably close to optimal</em> in polynomial time.</p>
+  <table>
+    <thead>
+      <tr><th>Problem</th><th>Technique</th><th>Ratio</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><span class="a">Vertex Cover</span></td><td>Greedy edge matching</td><td>2-approx</td></tr>
+      <tr><td><span class="g">TSP (metric)</span></td><td>Christofides-Serdyukov</td><td>3/2-approx</td></tr>
+      <tr><td><span class="p">Set Cover</span></td><td>Greedy</td><td>O(ln n)-approx</td></tr>
+      <tr><td><span class="b">MAX-SAT</span></td><td>Randomised rounding</td><td>3/4-approx</td></tr>
+      <tr><td><span class="r">Knapsack</span></td><td>FPTAS</td><td>(1 + &epsilon;) for any &epsilon; &gt; 0</td></tr>
+    </tbody>
+  </table>
+  <div class="cols cols-2" style="margin-top:.4em">
+    <div class="card green">
+      <h3>PTAS</h3>
+      <p>Polynomial-Time Approximation Scheme: (1+&epsilon;)-approx for any &epsilon;. Time polynomial in n but possibly exponential in 1/&epsilon;.</p>
+    </div>
+    <div class="card purple">
+      <h3>FPTAS</h3>
+      <p>Fully Polynomial TAS: time polynomial in both n and 1/&epsilon;. The gold standard for approximation.</p>
+    </div>
+  </div>
+  <div class="card red" style="margin-top:.3em">
+    <p>Not all NP-hard problems can be approximated well. TSP (general, non-metric) cannot be approximated within any constant factor unless P = NP.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+  SLIDE 18 — Parameterised Complexity
+══════════════════════════════════════════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">18</span>
+    <h2>Parameterised Complexity</h2>
+  </div>
+  <p>Instead of measuring complexity in input size <em>n</em> alone, we also consider a <em>parameter</em> k. A problem is <span class="a">fixed-parameter tractable</span> (FPT) if solvable in time f(k) &middot; n<sup>c</sup> for some computable f and constant c.</p>
+  <p>An O(2<sup>k</sup> &middot; n) algorithm is practical when k is small, even if n is large. Classical complexity calls this "exponential" &mdash; parameterised complexity recognises it as tractable.</p>
+  <table style="margin-top:.3em">
+    <thead>
+      <tr><th>Problem</th><th>Parameter k</th><th>Technique</th><th>Time</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><span class="a">Vertex Cover</span></td><td>Cover size</td><td>Bounded search tree</td><td>O(2<sup>k</sup> &middot; n)</td></tr>
+      <tr><td><span class="g">k-Clique</span></td><td>Clique size</td><td>Colour coding</td><td>O(2<sup>k</sup> &middot; n)</td></tr>
+      <tr><td><span class="p">Longest Path</span></td><td>Path length</td><td>Colour coding</td><td>O(2<sup>k</sup> &middot; n&sup2;)</td></tr>
+      <tr><td><span class="b">Treewidth</span></td><td>Treewidth</td><td>Dynamic programming</td><td>O(f(k) &middot; n)</td></tr>
+    </tbody>
+  </table>
+  <div class="card purple" style="margin-top:.3em">
+    <h3>W-hierarchy</h3>
+    <p>W[0] = FPT &sube; W[1] &sube; W[2] &sube; &hellip; &mdash; analogous to the P/NP hierarchy but parameterised. k-CLIQUE is W[1]-complete, meaning it is unlikely to be FPT.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+  SLIDE 19 — Space Complexity
+══════════════════════════════════════════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">19</span>
+    <h2>Space Complexity &mdash; PSPACE, L, NL</h2>
+  </div>
+  <table>
+    <thead>
+      <tr><th>Class</th><th>Definition</th><th>Key problems</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><span class="b">L</span></td><td>Decidable in O(log n) space (deterministic)</td><td>Undirected connectivity</td></tr>
+      <tr><td><span class="g">NL</span></td><td>Decidable in O(log n) space (nondeterministic)</td><td>Directed s-t connectivity (PATH)</td></tr>
+      <tr><td><span class="a">PSPACE</span></td><td>Decidable in polynomial space</td><td>QSAT, generalised chess/Go</td></tr>
+      <tr><td><span class="r">EXPTIME</span></td><td>Decidable in exponential time</td><td>Generalised chess (n&times;n)</td></tr>
+    </tbody>
+  </table>
+  <h3 style="margin-top:.4em">Known inclusions</h3>
+  <div style="display:flex; gap:.15em; align-items:center; margin:.2em 0; flex-wrap:wrap;">
+    <span class="ss-node" style="border-color:var(--blue); color:var(--blue)">L</span>
+    <span class="ss-arrow">&sube;</span>
+    <span class="ss-node" style="border-color:var(--green); color:var(--green)">NL</span>
+    <span class="ss-arrow">&sube;</span>
+    <span class="ss-node" style="border-color:var(--purple); color:var(--purple)">P</span>
+    <span class="ss-arrow">&sube;</span>
+    <span class="ss-node" style="border-color:var(--amber); color:var(--amber)">NP</span>
+    <span class="ss-arrow">&sube;</span>
+    <span class="ss-node" style="border-color:var(--amber); color:var(--amber)">PSPACE</span>
+    <span class="ss-arrow">&sube;</span>
+    <span class="ss-node" style="border-color:var(--red); color:var(--red)">EXPTIME</span>
+  </div>
+  <div class="cols cols-2" style="margin-top:.3em">
+    <div class="card green">
+      <h3>Savitch's Theorem</h3>
+      <p>NSPACE(f(n)) &sube; DSPACE(f(n)&sup2;). Nondeterminism gives at most a quadratic blowup in space. In particular, NL &sube; DSPACE(log&sup2; n).</p>
+    </div>
+    <div class="card blue">
+      <h3>NL-completeness</h3>
+      <p>PATH (directed s-t connectivity) is NL-complete under log-space reductions. It plays the same role in space complexity that SAT plays in time.</p>
+    </div>
+  </div>
+  <div class="card amber" style="margin-top:.3em">
+    <p>PSPACE captures problems where you can reuse space. Many two-player games are PSPACE-complete &mdash; the game tree is exponential but the space to evaluate it is polynomial.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+  SLIDE 20 — Summary & Further Reading
+══════════════════════════════════════════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">20</span>
+    <h2>Summary &amp; Further Reading</h2>
+  </div>
+  <div class="cols cols-2">
+    <div>
+      <h3>Key takeaways</h3>
+      <ul>
+        <li>Asymptotic notation (O, &Omega;, &Theta;) provides machine-independent growth-rate descriptions</li>
+        <li>P captures efficiently solvable problems; NP captures efficiently verifiable problems</li>
+        <li>NP-completeness (Cook-Levin, reductions) identifies the hardest problems in NP</li>
+        <li>If any NP-complete problem is in P, then P = NP &mdash; the most important open question in CS</li>
+        <li>Approximation algorithms provide provably good polynomial-time solutions when exact solutions are intractable</li>
+        <li>Parameterised complexity isolates the source of exponential blowup</li>
+        <li>Space complexity (L, NL, PSPACE) adds another dimension to classification</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Recommended reading</h3>
+      <table>
+        <thead>
+          <tr><th>Source</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="a">Sipser</span></td><td><em>Introduction to the Theory of Computation</em> &mdash; the standard complexity textbook</td></tr>
+          <tr><td><span class="a">Arora &amp; Barak</span></td><td><em>Computational Complexity: A Modern Approach</em> &mdash; comprehensive graduate reference</td></tr>
+          <tr><td><span class="a">CLRS</span></td><td><em>Introduction to Algorithms</em> &mdash; Ch. 34 covers NP-completeness</td></tr>
+          <tr><td><span class="a">Garey &amp; Johnson</span></td><td><em>Computers and Intractability</em> &mdash; the classic NP-completeness catalogue</td></tr>
+          <tr><td><span class="a">Complexity Zoo</span></td><td><a href="https://complexityzoo.net" style="color:var(--blue)">complexityzoo.net</a> &mdash; comprehensive class catalogue</td></tr>
+          <tr><td><span class="a">Aaronson</span></td><td><a href="https://scottaaronson.blog" style="color:var(--blue)">scottaaronson.blog</a> &mdash; accessible P vs NP writing</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+</div><!-- /slides -->
+</div><!-- /reveal -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/highlight.min.js"></script>
+<script>
+Reveal.initialize({
+  hash: true,
+  slideNumber: 'c/t',
+  transition: 'fade',
+  transitionSpeed: 'fast',
+  controls: true,
+  progress: true,
+  center: false,
+  width: 1100,
+  height: 900,
+  margin: 0.01,
+  plugins: [RevealHighlight],
+  highlight: { theme: 'monokai' }
+});
+</script>
+<script>
+(function(){
+  var h = Reveal.getConfig().height || 900;
+  var m = Reveal.getConfig().margin || 0.02;
+  var maxH = Math.floor(h * (1 - 2 * m)) + 'px';
+  function fixSlides(){
+    document.querySelectorAll('.reveal .slides>section,.reveal .slides>section>section').forEach(function(s){
+      s.style.display = 'block';
+      s.style.maxHeight = maxH;
+    });
+  }
+  Reveal.on('ready', fixSlides);
+  Reveal.on('slidechanged', fixSlides);
+})();
+</script>
+</body>
+</html>
