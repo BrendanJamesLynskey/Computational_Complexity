@@ -6,7 +6,7 @@
   <title>Computational Complexity</title>
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/black.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/white.min.css">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,17 +14,17 @@
 
   <style>
   :root {
-    --amber:  #f5a623;
-    --green:  #4ecb8d;
-    --purple: #a78bfa;
-    --blue:   #60a5fa;
-    --red:    #f87171;
-    --bg:     #0a0a0f;
-    --bg2:    #10101a;
-    --bg3:    #181824;
-    --border: #2a2a3a;
-    --text:   #e8e8f0;
-    --muted:  #8888a8;
+    --amber:  #bf7d10;
+    --green:  #1c815a;
+    --purple: #6435bc;
+    --blue:   #2b3dc5;
+    --red:    #db3a30;
+    --bg:     #fafaf8;
+    --bg2:    #f1f1ee;
+    --bg3:    #eaeae6;
+    --border: #d1d1cb;
+    --text:   #161616;
+    --muted:  #6a6a63;
   }
 
   .reveal-viewport { background: var(--bg); }
@@ -40,7 +40,7 @@
   .reveal code { font-family: 'JetBrains Mono', monospace; font-size: .72em; }
   .reveal pre  { box-shadow: none; background: var(--bg3); border: 1px solid var(--border);
                  border-radius: 6px; padding: .3em .5em; margin: .25em 0; }
-  .reveal pre code { font-size: .52em; line-height: 1.35; background: transparent; color: #cdd6f4; }
+  .reveal pre code { font-size: .52em; line-height: 1.35; background: transparent; color: #242422; }
 
   /* slide chrome */
   .slide-hdr {
@@ -75,16 +75,16 @@
   .card.blue  { border-left: 3px solid var(--blue); }
   .card.red   { border-left: 3px solid var(--red); }
   .card h3 { font-size: .64em; margin: 0 0 .12em; }
-  .card p  { font-size: .52em; margin: 0; color: #b8b8d0; }
+  .card p  { font-size: .52em; margin: 0; color: #3d3d39; }
   .card ul { margin: 0; padding-left: 1em; }
-  .card li { font-size: .52em; color: #b8b8d0; margin-bottom: .02em; }
+  .card li { font-size: .52em; color: #3d3d39; margin-bottom: .02em; }
 
   /* table */
   .reveal table { width: 100%; border-collapse: collapse; font-size: .5em; }
   .reveal table th { background: var(--bg3); color: var(--amber); font-weight: 600;
                      padding: .2em .4em; border: 1px solid var(--border); text-align: left; }
-  .reveal table td { padding: .18em .4em; border: 1px solid var(--border); color: #ccc; }
-  .reveal table tr:nth-child(even) td { background: #0e0e18; }
+  .reveal table td { padding: .18em .4em; border: 1px solid var(--border); color: #2d2d2b; }
+  .reveal table tr:nth-child(even) td { background: #f3f3f1; }
 
   /* accent spans */
   .a  { color: var(--amber); font-weight: 600; }
@@ -127,8 +127,8 @@
     padding: .2em .55em; border-radius: 5px; font-size: .9em;
     background: var(--bg3); border: 1px solid var(--border); color: var(--text);
   }
-  .ss-node.active { background: #1a2a1a; border-color: var(--green); color: var(--green); }
-  .ss-node.done   { background: #1a1a2a; border-color: var(--purple); color: var(--purple); }
+  .ss-node.active { background: #d3e1d5; border-color: var(--green); color: var(--green); }
+  .ss-node.done   { background: #e6e6e2; border-color: var(--purple); color: var(--purple); }
   .ss-arrow { color: var(--amber); }
   .ss-label { font-size: .8em; color: var(--muted); margin-left: .3em; }
 
@@ -136,6 +136,7 @@
   .reveal ul, .reveal ol { margin: .15em 0 .15em 1em; }
 .reveal .slides > section { display: flex !important; flex-direction: column !important; overflow-y: auto !important; align-items: stretch !important; justify-content: flex-start !important; }
 </style>
+<style>.reveal .slide-number{background-color:transparent}</style>
 </head>
 <body>
 <div class="reveal">
@@ -144,7 +145,7 @@
 <!-- ═══════════════════════════════════════════════════════════════
   SLIDE 01 — Title
 ══════════════════════════════════════════════════════════════════ -->
-<section class="title-slide" data-background-color="#0a0a0f">
+<section class="title-slide" data-background-color="#fafaf8">
   <div style="font-family:'JetBrains Mono',monospace; font-size:.5em; color:var(--muted); margin-bottom:.4em; letter-spacing:.1em;">COMPUTER SCIENCE FUNDAMENTALS SERIES</div>
   <h1>Computational<br>Complexity</h1>
   <div class="subtitle">
@@ -160,7 +161,7 @@
 <!-- ═══════════════════════════════════════════════════════════════
   SLIDE 02 — Asymptotic Notation
 ══════════════════════════════════════════════════════════════════ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#fafaf8">
   <div class="slide-hdr">
     <span class="tag">02</span>
     <h2>Asymptotic Notation &mdash; Big-O and Friends</h2>
@@ -189,7 +190,7 @@
 <!-- ═══════════════════════════════════════════════════════════════
   SLIDE 03 — Common Complexity Classes
 ══════════════════════════════════════════════════════════════════ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#fafaf8">
   <div class="slide-hdr">
     <span class="tag">03</span>
     <h2>Common Complexity Classes</h2>
@@ -217,7 +218,7 @@
 <!-- ═══════════════════════════════════════════════════════════════
   SLIDE 04 — Comparing Growth Rates
 ══════════════════════════════════════════════════════════════════ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#fafaf8">
   <div class="slide-hdr">
     <span class="tag">04</span>
     <h2>Comparing Growth Rates</h2>
@@ -249,7 +250,7 @@
 <!-- ═══════════════════════════════════════════════════════════════
   SLIDE 05 — Amortised Analysis
 ══════════════════════════════════════════════════════════════════ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#fafaf8">
   <div class="slide-hdr">
     <span class="tag">05</span>
     <h2>Amortised Analysis</h2>
@@ -280,7 +281,7 @@
 <!-- ═══════════════════════════════════════════════════════════════
   SLIDE 06 — Decision Problems and Languages
 ══════════════════════════════════════════════════════════════════ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#fafaf8">
   <div class="slide-hdr">
     <span class="tag">06</span>
     <h2>Decision Problems and Languages</h2>
@@ -318,7 +319,7 @@
 <!-- ═══════════════════════════════════════════════════════════════
   SLIDE 07 — The Class P
 ══════════════════════════════════════════════════════════════════ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#fafaf8">
   <div class="slide-hdr">
     <span class="tag">07</span>
     <h2>The Class P</h2>
@@ -358,7 +359,7 @@
 <!-- ═══════════════════════════════════════════════════════════════
   SLIDE 08 — The Class NP
 ══════════════════════════════════════════════════════════════════ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#fafaf8">
   <div class="slide-hdr">
     <span class="tag">08</span>
     <h2>The Class NP</h2>
@@ -388,7 +389,7 @@
 <!-- ═══════════════════════════════════════════════════════════════
   SLIDE 09 — NP Verifiers and Certificates
 ══════════════════════════════════════════════════════════════════ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#fafaf8">
   <div class="slide-hdr">
     <span class="tag">09</span>
     <h2>NP &mdash; Verifiers and Certificates</h2>
@@ -417,7 +418,7 @@
 <!-- ═══════════════════════════════════════════════════════════════
   SLIDE 10 — Polynomial-Time Reductions
 ══════════════════════════════════════════════════════════════════ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#fafaf8">
   <div class="slide-hdr">
     <span class="tag">10</span>
     <h2>Polynomial-Time Reductions</h2>
@@ -476,7 +477,7 @@
 <!-- ═══════════════════════════════════════════════════════════════
   SLIDE 11 — NP-Completeness
 ══════════════════════════════════════════════════════════════════ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#fafaf8">
   <div class="slide-hdr">
     <span class="tag">11</span>
     <h2>NP-Completeness</h2>
@@ -509,7 +510,7 @@
 <!-- ═══════════════════════════════════════════════════════════════
   SLIDE 12 — Cook-Levin Theorem
 ══════════════════════════════════════════════════════════════════ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#fafaf8">
   <div class="slide-hdr">
     <span class="tag">12</span>
     <h2>The Cook-Levin Theorem</h2>
@@ -546,7 +547,7 @@
 <!-- ═══════════════════════════════════════════════════════════════
   SLIDE 13 — Classic NP-Complete Problems I
 ══════════════════════════════════════════════════════════════════ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#fafaf8">
   <div class="slide-hdr">
     <span class="tag">13</span>
     <h2>Classic NP-Complete Problems I</h2>
@@ -585,7 +586,7 @@
 <!-- ═══════════════════════════════════════════════════════════════
   SLIDE 14 — Classic NP-Complete Problems II
 ══════════════════════════════════════════════════════════════════ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#fafaf8">
   <div class="slide-hdr">
     <span class="tag">14</span>
     <h2>Classic NP-Complete Problems II</h2>
@@ -624,7 +625,7 @@
 <!-- ═══════════════════════════════════════════════════════════════
   SLIDE 15 — NP-Hard Problems
 ══════════════════════════════════════════════════════════════════ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#fafaf8">
   <div class="slide-hdr">
     <span class="tag">15</span>
     <h2>NP-Hard Problems</h2>
@@ -647,20 +648,20 @@
   <div style="background:var(--bg2); border:1px solid var(--border); border-radius:6px; padding:.5em;">
     <svg viewBox="0 0 500 180" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto">
       <!-- NP-hard outer -->
-      <ellipse cx="250" cy="90" rx="240" ry="80" fill="none" stroke="#f87171" stroke-width="1.5" stroke-dasharray="4,3"/>
-      <text x="480" y="30" text-anchor="end" font-family="'DM Sans',sans-serif" font-size="12" fill="#f87171">NP-hard</text>
+      <ellipse cx="250" cy="90" rx="240" ry="80" fill="none" stroke="#db3a30" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <text x="480" y="30" text-anchor="end" font-family="'DM Sans',sans-serif" font-size="12" fill="#db3a30">NP-hard</text>
       <!-- NP -->
-      <ellipse cx="180" cy="90" rx="140" ry="60" fill="none" stroke="#4ecb8d" stroke-width="1.5"/>
-      <text x="60" y="30" font-family="'DM Sans',sans-serif" font-size="12" fill="#4ecb8d">NP</text>
+      <ellipse cx="180" cy="90" rx="140" ry="60" fill="none" stroke="#1c815a" stroke-width="1.5"/>
+      <text x="60" y="30" font-family="'DM Sans',sans-serif" font-size="12" fill="#1c815a">NP</text>
       <!-- P -->
-      <ellipse cx="140" cy="90" rx="80" ry="40" fill="none" stroke="#60a5fa" stroke-width="1.5"/>
-      <text x="110" y="80" font-family="'DM Sans',sans-serif" font-size="12" fill="#60a5fa">P</text>
+      <ellipse cx="140" cy="90" rx="80" ry="40" fill="none" stroke="#2b3dc5" stroke-width="1.5"/>
+      <text x="110" y="80" font-family="'DM Sans',sans-serif" font-size="12" fill="#2b3dc5">P</text>
       <!-- NP-complete intersection -->
-      <text x="240" y="80" font-family="'DM Sans',sans-serif" font-size="11" fill="#f5a623">NP-complete</text>
-      <text x="240" y="95" font-family="'DM Sans',sans-serif" font-size="10" fill="#8888a8">(NP-hard &cap; NP)</text>
+      <text x="240" y="80" font-family="'DM Sans',sans-serif" font-size="11" fill="#bf7d10">NP-complete</text>
+      <text x="240" y="95" font-family="'DM Sans',sans-serif" font-size="10" fill="#6a6a63">(NP-hard &cap; NP)</text>
       <!-- Outside NP -->
-      <text x="400" y="90" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="10" fill="#8888a8">Halting</text>
-      <text x="400" y="105" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="10" fill="#8888a8">QSAT</text>
+      <text x="400" y="90" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="10" fill="#6a6a63">Halting</text>
+      <text x="400" y="105" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="10" fill="#6a6a63">QSAT</text>
     </svg>
   </div>
 </section>
@@ -668,7 +669,7 @@
 <!-- ═══════════════════════════════════════════════════════════════
   SLIDE 16 — P vs NP
 ══════════════════════════════════════════════════════════════════ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#fafaf8">
   <div class="slide-hdr">
     <span class="tag">16</span>
     <h2>P vs NP &mdash; The Open Question</h2>
@@ -704,7 +705,7 @@
 <!-- ═══════════════════════════════════════════════════════════════
   SLIDE 17 — Approximation Algorithms
 ══════════════════════════════════════════════════════════════════ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#fafaf8">
   <div class="slide-hdr">
     <span class="tag">17</span>
     <h2>Approximation Algorithms</h2>
@@ -740,7 +741,7 @@
 <!-- ═══════════════════════════════════════════════════════════════
   SLIDE 18 — Parameterised Complexity
 ══════════════════════════════════════════════════════════════════ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#fafaf8">
   <div class="slide-hdr">
     <span class="tag">18</span>
     <h2>Parameterised Complexity</h2>
@@ -767,7 +768,7 @@
 <!-- ═══════════════════════════════════════════════════════════════
   SLIDE 19 — Space Complexity
 ══════════════════════════════════════════════════════════════════ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#fafaf8">
   <div class="slide-hdr">
     <span class="tag">19</span>
     <h2>Space Complexity &mdash; PSPACE, L, NL</h2>
@@ -815,7 +816,7 @@
 <!-- ═══════════════════════════════════════════════════════════════
   SLIDE 20 — Summary & Further Reading
 ══════════════════════════════════════════════════════════════════ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#fafaf8">
   <div class="slide-hdr">
     <span class="tag">20</span>
     <h2>Summary &amp; Further Reading</h2>
